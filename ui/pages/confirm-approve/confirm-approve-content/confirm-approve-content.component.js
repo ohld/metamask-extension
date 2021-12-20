@@ -28,6 +28,7 @@ import { SECOND } from '../../../../shared/constants/time';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import GasDetailsItem from '../../../components/app/gas-details-item';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
+import { ERC1155, ERC20, ERC721 } from '../../../helpers/constants/common';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -178,7 +179,60 @@ export default class ConfirmApproveContent extends Component {
     );
   }
 
-  renderPermissionContent() {
+  renderERC721OrERC1155PermissionContent() {
+    const { t } = this.context;
+    const { origin, toAddress, isContract, assetName, tokenId } = this.props;
+
+    const displayedAddress = isContract
+      ? `${t('contract')} (${addressSummary(toAddress)})`
+      : addressSummary(toAddress);
+    return (
+      <div className="flex-column">
+        <div className="confirm-approve-content__small-text">
+          {t('accessAndSpendNoticeNFT', [origin])}
+        </div>
+        <div className="flex-row">
+          <div className="confirm-approve-content__label">
+            {t('approvedAsset')}:
+          </div>
+          <div className="confirm-approve-content__medium-text">
+            {`${assetName} #${tokenId}`}
+          </div>
+        </div>
+        <div className="flex-row">
+          <div className="confirm-approve-content__label">
+            {t('grantedToWithColon')}
+          </div>
+          <div className="confirm-approve-content__medium-text">
+            {`${displayedAddress}`}
+          </div>
+          <div className="confirm-approve-content__medium-text">
+            <Button
+              type="link"
+              className="confirm-approve-content__copy-address"
+              onClick={() => {
+                this.setState({ copied: true });
+                this.copyTimeout = setTimeout(
+                  () => this.setState({ copied: false }),
+                  SECOND * 3,
+                );
+                copyToClipboard(toAddress);
+              }}
+              title={
+                this.state.copied
+                  ? t('copiedExclamation')
+                  : t('copyToClipboard')
+              }
+            >
+              <CopyIcon size={14} color="#6a737d" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderERC20PermissionContent() {
     const { t } = this.context;
     const {
       customTokenAmount,
@@ -188,6 +242,7 @@ export default class ConfirmApproveContent extends Component {
       toAddress,
       isContract,
     } = this.props;
+
     const displayedAddress = isContract
       ? `${t('contract')} (${addressSummary(toAddress)})`
       : addressSummary(toAddress);
@@ -250,6 +305,64 @@ export default class ConfirmApproveContent extends Component {
         </div>
       </div>
     );
+  }
+
+  renderFullDetails() {
+    const { t } = this.context;
+    const { assetStandard } = this.props;
+    if (assetStandard === ERC20) {
+      return (
+        <div className="confirm-approve-content__full-tx-content">
+          <div className="confirm-approve-content__permission">
+            {this.renderApproveContentCard({
+              symbol: <img src="./images/user-check.svg" alt="" />,
+              title: t('permissionRequest'),
+              content: this.renderERC20PermissionContent(),
+              showEdit: true,
+              onEditClick: () =>
+                showEditApprovalPermissionModal({
+                  customTokenAmount,
+                  decimals,
+                  origin,
+                  setCustomAmount,
+                  tokenAmount,
+                  tokenSymbol,
+                  tokenBalance,
+                }),
+            })}
+          </div>
+          <div className="confirm-approve-content__data">
+            {this.renderApproveContentCard({
+              symbol: <i className="fa fa-file" />,
+              title: 'Data',
+              content: this.renderDataContent(),
+              noBorder: true,
+            })}
+          </div>
+        </div>
+      );
+    } else if (assetStandard === ERC721 || assetStandard === ERC1155) {
+      return (
+        <div className="confirm-approve-content__full-tx-content">
+          <div className="confirm-approve-content__permission">
+            {this.renderApproveContentCard({
+              symbol: <img src="./images/user-check.svg" alt="" />,
+              title: t('permissionRequest'),
+              content: this.renderERC721OrERC1155PermissionContent(),
+              showEdit: false,
+            })}
+          </div>
+          <div className="confirm-approve-content__data">
+            {this.renderApproveContentCard({
+              symbol: <i className="fa fa-file" />,
+              title: 'Data',
+              content: this.renderDataContent(),
+              noBorder: true,
+            })}
+          </div>
+        </div>
+      );
+    }
   }
 
   renderCustomNonceContent() {
@@ -321,11 +434,13 @@ export default class ConfirmApproveContent extends Component {
       warning,
       txData,
       fromAddressIsLedger,
-      tokenImage,
       toAddress,
       chainId,
       rpcPrefs,
       isContract,
+      assetStandard,
+      tokenId,
+      assetName,
     } = this.props;
     const { showFullTxDetails } = this.state;
 
@@ -368,7 +483,9 @@ export default class ConfirmApproveContent extends Component {
           </Box>
         </Box>
         <div className="confirm-approve-content__title">
-          {t('allowSpendToken', [tokenSymbol])}
+          {assetStandard === ERC20
+            ? t('allowSpendToken', [tokenSymbol])
+            : t('allowSpendToken', [`${assetName} (#${tokenId})`])}
         </div>
         <div className="confirm-approve-content__description">
           {t('trustSiteApprovePermission', [
@@ -383,7 +500,6 @@ export default class ConfirmApproveContent extends Component {
               className="confirm-approve-content__address-identicon"
               diameter={20}
               address={toAddress}
-              image={tokenImage}
             />
             <Typography
               variant={TYPOGRAPHY.H6}
@@ -438,24 +554,26 @@ export default class ConfirmApproveContent extends Component {
             </Button>
           </Box>
         </Box>
-        <div className="confirm-approve-content__edit-submission-button-container">
-          <div
-            className="confirm-approve-content__medium-link-text cursor-pointer"
-            onClick={() =>
-              showEditApprovalPermissionModal({
-                customTokenAmount,
-                decimals,
-                origin,
-                setCustomAmount,
-                tokenAmount,
-                tokenSymbol,
-                tokenBalance,
-              })
-            }
-          >
-            {t('editPermission')}
+        {assetStandard === ERC20 ? (
+          <div className="confirm-approve-content__edit-submission-button-container">
+            <div
+              className="confirm-approve-content__medium-link-text cursor-pointer"
+              onClick={() =>
+                showEditApprovalPermissionModal({
+                  customTokenAmount,
+                  decimals,
+                  origin,
+                  setCustomAmount,
+                  tokenAmount,
+                  tokenSymbol,
+                  tokenBalance,
+                })
+              }
+            >
+              {t('editPermission')}
+            </div>
           </div>
-        </div>
+        ) : null}
         <div className="confirm-approve-content__card-wrapper">
           {this.renderApproveContentCard({
             symbol: <i className="fa fa-tag" />,
@@ -527,36 +645,7 @@ export default class ConfirmApproveContent extends Component {
           </div>
         ) : null}
 
-        {showFullTxDetails ? (
-          <div className="confirm-approve-content__full-tx-content">
-            <div className="confirm-approve-content__permission">
-              {this.renderApproveContentCard({
-                symbol: <img src="./images/user-check.svg" alt="" />,
-                title: t('permissionRequest'),
-                content: this.renderPermissionContent(),
-                showEdit: true,
-                onEditClick: () =>
-                  showEditApprovalPermissionModal({
-                    customTokenAmount,
-                    decimals,
-                    origin,
-                    setCustomAmount,
-                    tokenAmount,
-                    tokenSymbol,
-                    tokenBalance,
-                  }),
-              })}
-            </div>
-            <div className="confirm-approve-content__data">
-              {this.renderApproveContentCard({
-                symbol: <i className="fa fa-file" />,
-                title: 'Data',
-                content: this.renderDataContent(),
-                noBorder: true,
-              })}
-            </div>
-          </div>
-        ) : null}
+        {showFullTxDetails ? this.renderFullDetails() : null}
       </div>
     );
   }

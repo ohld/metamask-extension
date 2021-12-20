@@ -9,7 +9,7 @@ import { isTokenMethodAction } from '../../helpers/utils/transactions.util';
 
 import {
   getContractMethodData,
-  getTokenParams,
+  getAssetDetails,
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
 import { unconfirmedTransactionsListSelector } from '../../selectors';
@@ -26,15 +26,18 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
   const { id } = params;
   const sendTo = getSendTo(state);
-
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
   const totalUnconfirmed = unconfirmedTransactions.length;
   const transaction = totalUnconfirmed
     ? unapprovedTxs[id] || unconfirmedTransactions[0]
     : {};
+
   const { id: transactionId, type } = transaction;
 
+  // const assetDetails = await getAssetDetails(tokenAddress, data);
+
   return {
+    // assetDetails: assetDetails,
     totalUnapprovedCount: totalUnconfirmed,
     sendTo,
     unapprovedTxs,
@@ -54,7 +57,7 @@ const mapDispatchToProps = (dispatch) => {
     },
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     getContractMethodData: (data) => dispatch(getContractMethodData(data)),
-    getTokenParams: (tokenAddress) => dispatch(getTokenParams(tokenAddress)),
+    // getAssetDetails: (tokenAddress, transactionData) => getAssetDetails(tokenAddress, transactionData),
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),
   };

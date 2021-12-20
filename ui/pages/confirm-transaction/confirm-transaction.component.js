@@ -30,7 +30,13 @@ import {
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
+  getAssetDetails,
 } from '../../store/actions';
+import { getTokenData } from '../../helpers/utils/transactions.util';
+import {
+  calcTokenAmount,
+  getTokenValueParam,
+} from '../../helpers/utils/token-util';
 import ConfTx from './conf-tx';
 
 export default class ConfirmTransaction extends Component {
@@ -49,14 +55,13 @@ export default class ConfirmTransaction extends Component {
     getContractMethodData: PropTypes.func,
     transactionId: PropTypes.string,
     paramsTransactionId: PropTypes.string,
-    getTokenParams: PropTypes.func,
     isTokenMethodAction: PropTypes.bool,
     setDefaultHomeActiveTabName: PropTypes.func,
   };
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { assetDetails: null };
   }
 
   _beforeUnload = () => {
@@ -78,7 +83,6 @@ export default class ConfirmTransaction extends Component {
       getContractMethodData,
       transactionId,
       paramsTransactionId,
-      getTokenParams,
       isTokenMethodAction,
     } = this.props;
 
@@ -98,11 +102,12 @@ export default class ConfirmTransaction extends Component {
       history.replace(mostRecentOverviewPage);
       return;
     }
-
     getContractMethodData(data);
-    if (isTokenMethodAction) {
-      getTokenParams(to);
-    }
+    // if (isTokenMethodAction) {
+    //   getAssetDetails(to, data).then((res) => {
+    //     this.setState({ assetDetails: res });
+    //   });
+    // }
     const txId = transactionId || paramsTransactionId;
     if (txId) {
       this.props.setTransactionToConfirm(txId);
@@ -117,7 +122,7 @@ export default class ConfirmTransaction extends Component {
   componentDidUpdate(prevProps) {
     const {
       setTransactionToConfirm,
-      transaction: { txData: { txParams: { data } = {} } = {} },
+      transaction: { txData: { txParams: { to, data } = {} } = {} },
       clearConfirmTransaction,
       getContractMethodData,
       paramsTransactionId,
@@ -184,7 +189,7 @@ export default class ConfirmTransaction extends Component {
         <Route
           exact
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_APPROVE_PATH}`}
-          component={ConfirmApprove}
+          render={() => <ConfirmApprove {...this.props} />}
         />
         <Route
           exact
