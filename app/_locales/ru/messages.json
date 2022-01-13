@@ -1309,9 +1309,6 @@
   "history": {
     "message": "История"
   },
-  "id": {
-    "message": "Ид."
-  },
   "import": {
     "message": "Импорт",
     "description": "Button to import an account from a selected file"

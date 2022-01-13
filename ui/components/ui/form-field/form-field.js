@@ -30,6 +30,7 @@ export default function FormField({
   password,
   allowDecimals,
   disabled,
+  placeholder,
 }) {
   return (
     <div
@@ -84,6 +85,7 @@ export default function FormField({
             autoFocus={autoFocus}
             allowDecimals={allowDecimals}
             disabled={disabled}
+            placeholder={placeholder}
           />
         ) : (
           <input
@@ -96,6 +98,7 @@ export default function FormField({
             autoFocus={autoFocus}
             disabled={disabled}
             data-testid={dataTestId}
+            placeholder={placeholder}
           />
         )}
         {error && (
@@ -169,6 +172,10 @@ FormField.propTypes = {
    * Check if the form disabled
    */
   disabled: PropTypes.bool,
+  /**
+   * Set the placeholder text for the input field
+   */
+  placeholder: PropTypes.string,
 };
 
 FormField.defaultProps = {

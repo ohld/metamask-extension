@@ -1309,9 +1309,6 @@
   "history": {
     "message": "Geçmiş"
   },
-  "id": {
-    "message": "Kimlik"
-  },
   "import": {
     "message": "Al",
     "description": "Button to import an account from a selected file"

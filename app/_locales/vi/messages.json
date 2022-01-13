@@ -1309,9 +1309,6 @@
   "history": {
     "message": "Lịch sử"
   },
-  "id": {
-    "message": "ID"
-  },
   "import": {
     "message": "Nhập",
     "description": "Button to import an account from a selected file"

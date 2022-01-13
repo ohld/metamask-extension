@@ -1309,9 +1309,6 @@
   "history": {
     "message": "Ιστορικό"
   },
-  "id": {
-    "message": "Αναγνωριστικό"
-  },
   "import": {
     "message": "Εισαγωγή",
     "description": "Button to import an account from a selected file"
