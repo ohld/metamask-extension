@@ -7,7 +7,7 @@ import {
   getTokenAddressParam,
   getTokenValueParam,
 } from '../helpers/utils/token-util';
-import { getTokenData } from '../helpers/utils/transactions.util';
+import { parseTransactionData } from '../helpers/utils/transactions.util';
 import { getTokenList } from '../selectors';
 
 export function useAssetDetails(tokenAddress, userAddress, transactionData) {
@@ -43,7 +43,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
     tokenId;
 
   if (currentAsset) {
-    const tokenData = getTokenData(transactionData);
+    const tokenData = parseTransactionData(transactionData);
     assetStandard = currentAsset?.standard;
     assetAddress = tokenAddress;
     tokenSymbol = currentAsset?.symbol;
