@@ -27,6 +27,8 @@ import {
   getIsMultiLayerFeeNetwork,
   checkNetworkAndAccountSupports1559,
   getEIP1559V2Enabled,
+  currentNetworkTxListSelector,
+  txDataSelector,
 } from '../../selectors';
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
 import AdvancedGasFeePopover from '../../components/app/advanced-gas-fee-popover';
@@ -37,6 +39,7 @@ import { ERC20, ERC1155, ERC721 } from '../../helpers/constants/common';
 import { useAssetDetails } from '../../hooks/useAssetDetails';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
+import { useParams } from 'react-router';
 
 const isAddressLedgerByFromAddress = (address) => (state) => {
   return isAddressLedger(state, address);
@@ -44,6 +47,16 @@ const isAddressLedgerByFromAddress = (address) => (state) => {
 
 export default function ConfirmApprove() {
   const dispatch = useDispatch();
+  const { id: paramsTransactionId } = useParams();
+  const {
+    id: transactionId,
+  } = useSelector(txDataSelector);
+  const currentNetworkTxList = useSelector(currentNetworkTxListSelector);
+  const transaction =
+  currentNetworkTxList.find(
+    ({ id }) => id === (Number(paramsTransactionId) || transactionId),
+  ) || {};
+
   const {
     txParams: {
       to: tokenAddress,
@@ -51,6 +64,7 @@ export default function ConfirmApprove() {
       from: userAddress,
     } = {},
   } = transaction;
+
   const currentCurrency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
   const subjectMetadata = useSelector(getSubjectMetadata);

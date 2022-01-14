@@ -7,7 +7,7 @@ import {
 import { getTokenStandardAndDetails } from '../../store/actions';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
-import { getTokenData } from './transactions.util';
+import { getTransactionData } from './transactions.util';
 
 const DEFAULT_SYMBOL = '';
 
@@ -223,7 +223,7 @@ export async function getAssetDetails(
   existingTokens,
   tokenList,
 ) {
-  const tokenData = getTokenData(transactionData);
+  const tokenData = getTransactionData(transactionData);
   if (!tokenData) {
     throw new Error('Unable to detect valid token data');
   }
