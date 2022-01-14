@@ -28,7 +28,14 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
       setCurrentAsset(assetDetails);
     }
     getAndSetAssetDetails();
-  }, [tokenAddress, transactionData]);
+  }, [
+    tokenAddress,
+    userAddress,
+    transactionData,
+    collectibles,
+    tokens,
+    tokenList,
+  ]);
 
   let assetStandard,
     assetName,

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import ConfirmTransactionBase from '../confirm-transaction-base';
 import { EDIT_GAS_MODES } from '../../../shared/constants/gas';
 import {
@@ -39,7 +40,6 @@ import { ERC20, ERC1155, ERC721 } from '../../helpers/constants/common';
 import { useAssetDetails } from '../../hooks/useAssetDetails';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
-import { useParams } from 'react-router';
 
 const isAddressLedgerByFromAddress = (address) => (state) => {
   return isAddressLedger(state, address);
@@ -48,14 +48,12 @@ const isAddressLedgerByFromAddress = (address) => (state) => {
 export default function ConfirmApprove() {
   const dispatch = useDispatch();
   const { id: paramsTransactionId } = useParams();
-  const {
-    id: transactionId,
-  } = useSelector(txDataSelector);
+  const { id: transactionId } = useSelector(txDataSelector);
   const currentNetworkTxList = useSelector(currentNetworkTxListSelector);
   const transaction =
-  currentNetworkTxList.find(
-    ({ id }) => id === (Number(paramsTransactionId) || transactionId),
-  ) || {};
+    currentNetworkTxList.find(
+      ({ id }) => id === (Number(paramsTransactionId) || transactionId),
+    ) || {};
 
   const {
     txParams: {

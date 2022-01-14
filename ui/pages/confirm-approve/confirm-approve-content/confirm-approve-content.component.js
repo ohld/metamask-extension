@@ -61,13 +61,15 @@ export default class ConfirmApproveContent extends Component {
     warning: PropTypes.string,
     txData: PropTypes.object,
     fromAddressIsLedger: PropTypes.bool,
-    tokenImage: PropTypes.string,
     chainId: PropTypes.string,
     rpcPrefs: PropTypes.object,
     isContract: PropTypes.bool,
     hexTransactionTotal: PropTypes.string,
     isMultiLayerFeeNetwork: PropTypes.bool,
     supportsEIP1559V2: PropTypes.bool,
+    assetName: PropTypes.string,
+    tokenId: PropTypes.string,
+    assetStandard: PropTypes.string,
   };
 
   state = {
@@ -309,7 +311,17 @@ export default class ConfirmApproveContent extends Component {
 
   renderFullDetails() {
     const { t } = this.context;
-    const { assetStandard } = this.props;
+    const {
+      assetStandard,
+      showEditApprovalPermissionModal,
+      customTokenAmount,
+      tokenAmount,
+      decimals,
+      origin,
+      setCustomAmount,
+      tokenSymbol,
+      tokenBalance,
+    } = this.props;
     if (assetStandard === ERC20) {
       return (
         <div className="confirm-approve-content__full-tx-content">
@@ -363,6 +375,7 @@ export default class ConfirmApproveContent extends Component {
         </div>
       );
     }
+    return null;
   }
 
   renderCustomNonceContent() {

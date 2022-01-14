@@ -283,4 +283,6 @@ export async function getAssetDetails(
       standard: tokenDetails?.standard,
     };
   }
+
+  return null;
 }

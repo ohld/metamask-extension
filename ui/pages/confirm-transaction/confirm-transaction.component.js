@@ -30,13 +30,7 @@ import {
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
-  getAssetDetails,
 } from '../../store/actions';
-import { getTokenData } from '../../helpers/utils/transactions.util';
-import {
-  calcTokenAmount,
-  getTokenValueParam,
-} from '../../helpers/utils/token-util';
 import ConfTx from './conf-tx';
 
 export default class ConfirmTransaction extends Component {
@@ -59,11 +53,6 @@ export default class ConfirmTransaction extends Component {
     setDefaultHomeActiveTabName: PropTypes.func,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = { assetDetails: null };
-  }
-
   _beforeUnload = () => {
     this._isMounted = false;
     if (this.state.pollingToken) {
@@ -79,11 +68,10 @@ export default class ConfirmTransaction extends Component {
       sendTo,
       history,
       mostRecentOverviewPage,
-      transaction: { txParams: { data, to } = {} } = {},
+      transaction: { txParams: { data } = {} } = {},
       getContractMethodData,
       transactionId,
       paramsTransactionId,
-      isTokenMethodAction,
     } = this.props;
 
     getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
@@ -103,11 +91,6 @@ export default class ConfirmTransaction extends Component {
       return;
     }
     getContractMethodData(data);
-    // if (isTokenMethodAction) {
-    //   getAssetDetails(to, data).then((res) => {
-    //     this.setState({ assetDetails: res });
-    //   });
-    // }
     const txId = transactionId || paramsTransactionId;
     if (txId) {
       this.props.setTransactionToConfirm(txId);
@@ -122,7 +105,7 @@ export default class ConfirmTransaction extends Component {
   componentDidUpdate(prevProps) {
     const {
       setTransactionToConfirm,
-      transaction: { txData: { txParams: { to, data } = {} } = {} },
+      transaction: { txData: { txParams: { data } = {} } = {} },
       clearConfirmTransaction,
       getContractMethodData,
       paramsTransactionId,

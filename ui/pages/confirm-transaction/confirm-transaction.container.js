@@ -9,7 +9,6 @@ import { isTokenMethodAction } from '../../helpers/utils/transactions.util';
 
 import {
   getContractMethodData,
-  getAssetDetails,
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
 import { unconfirmedTransactionsListSelector } from '../../selectors';
