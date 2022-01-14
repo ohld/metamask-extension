@@ -94,7 +94,6 @@ export default function ConfirmApprove() {
   const {
     assetStandard,
     assetName,
-    assetAddress,
     userBalance,
     tokenSymbol,
     decimals,
@@ -161,7 +160,6 @@ export default function ConfirmApprove() {
     tokensText = assetName;
   }
 
-  // TODO It should be okay if this is undefined?
   const tokenBalance = userBalance
     ? calcTokenAmount(userBalance, decimals).toString(10)
     : '';
@@ -172,10 +170,7 @@ export default function ConfirmApprove() {
       })
     : null;
 
-  // TODO modify the ConfirmApproveContent with branching logic based on asset standard
-  return tokenSymbol === undefined &&
-    assetName === undefined &&
-    assetAddress === undefined ? (
+  return tokenSymbol === undefined && assetName === undefined ? (
     <Loading />
   ) : (
     <GasFeeContextProvider transaction={transaction}>

@@ -53,6 +53,11 @@ export default class ConfirmTransaction extends Component {
     setDefaultHomeActiveTabName: PropTypes.func,
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   _beforeUnload = () => {
     this._isMounted = false;
     if (this.state.pollingToken) {
@@ -91,6 +96,11 @@ export default class ConfirmTransaction extends Component {
       return;
     }
     getContractMethodData(data);
+
+    // if (isTokenMethodAction) {
+    //   getTokenParams(to);
+    // }
+
     const txId = transactionId || paramsTransactionId;
     if (txId) {
       this.props.setTransactionToConfirm(txId);
@@ -172,7 +182,7 @@ export default class ConfirmTransaction extends Component {
         <Route
           exact
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_APPROVE_PATH}`}
-          render={() => <ConfirmApprove {...this.props} />}
+          component={ConfirmApprove}
         />
         <Route
           exact

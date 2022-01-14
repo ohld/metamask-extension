@@ -122,9 +122,9 @@ describe('useTokenDisplayValue', () => {
     describe(`when input is decimals: ${token.decimals} and value: ${tokenValue}`, () => {
       it(`should return ${displayValue} as displayValue`, () => {
         const getTokenValueStub = sinon.stub(tokenUtil, 'getTokenValueParam');
-        const getTokenDataStub = sinon.stub(txUtil, 'parseTransactionData');
+        const parseTransactionDataStub = sinon.stub(txUtil, 'parseTransactionData');
 
-        getTokenDataStub.callsFake(() => tokenData);
+        parseTransactionDataStub.callsFake(() => tokenData);
         getTokenValueStub.callsFake(() => tokenValue);
 
         const { result } = renderHook(() =>

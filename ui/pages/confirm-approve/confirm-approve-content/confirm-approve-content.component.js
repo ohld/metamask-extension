@@ -496,9 +496,11 @@ export default class ConfirmApproveContent extends Component {
           </Box>
         </Box>
         <div className="confirm-approve-content__title">
-          {assetStandard === ERC20
-            ? t('allowSpendToken', [tokenSymbol])
-            : t('allowSpendToken', [`${assetName} (#${tokenId})`])}
+          {t('allowSpendToken', [
+            assetStandard === ERC20
+              ? tokenSymbol
+              : `${assetName} (#${tokenId})`,
+          ])}
         </div>
         <div className="confirm-approve-content__description">
           {t('trustSiteApprovePermission', [
